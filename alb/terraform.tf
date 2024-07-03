@@ -1,4 +1,11 @@
 terraform {
+  cloud {
+    organization = "my-very-cool-org"
+
+    workspaces {
+      name = "terraform-playground"
+    }
+  }
   required_providers {
     aws = {
       source  = "hashicorp/aws"
