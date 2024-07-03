@@ -107,6 +107,29 @@ resource "aws_alb_listener" "alb_listener" {
   }
 }
 
+resource "aws_alb_listener_rule" "rule" {
+  tags         = { name = "DemoRule" }
+  listener_arn = aws_alb_listener.alb_listener.arn
+  priority     = 1
+
+  action {
+    type = "fixed-response"
+
+    fixed_response {
+      content_type = "text/plain"
+      message_body = "NOT FOUND 404!! (custom error)"
+      status_code  = "404"
+    }
+  }
+
+  condition {
+    path_pattern {
+      values = ["/error"]
+    }
+  }
+
+}
+
 resource "aws_alb" "alb" {
   name               = "DemoALB"
   subnets            = ["subnet-0c6fbb9ea5983b85c", "subnet-017c1747d6f3e0bd3", "subnet-053036c966707cc0f", "subnet-04d23d5a74143b17c", "subnet-01c3b2698a08cb6cb", "subnet-06303e382ed0cad39"]
