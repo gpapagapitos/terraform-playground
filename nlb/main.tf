@@ -49,6 +49,7 @@ resource "aws_security_group" "launch_wizard_1" {
     to_port         = 80
     protocol        = "tcp"
     security_groups = [aws_security_group.nlb_sg.id]
+    description     = "Allow traffic from NLB"
   }
 
   egress {
