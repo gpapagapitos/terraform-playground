@@ -1,0 +1,15 @@
+terraform {
+  cloud {
+    organization = "my-very-cool-org"
+
+    workspaces {
+      name = "terraform-playground"
+    }
+  }
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "5.55.0"
+    }
+  }
+}
