@@ -38,6 +38,20 @@ resource "aws_instance" "instance_2" {
   }
 }
 
+resource "aws_instance" "instance_3" {
+  ami           = "ami-06c68f701d8090592"
+  instance_type = "t2.micro"
+
+  vpc_security_group_ids = [aws_security_group.launch_wizard_1.id]
+
+  user_data = data.template_file.init.template
+
+  tags = {
+    Name      = "Instance 3"
+    Terraform = "true"
+  }
+}
+
 resource "aws_security_group" "alb_sg" {
   name        = "demo-sg-load-balancer"
   description = "Allow HTTP into ALB"
@@ -82,6 +96,12 @@ resource "aws_alb_target_group" "alb_tg" {
   vpc_id               = data.aws_vpc.default.id
   deregistration_delay = 30
   target_type          = "instance"
+
+  stickiness {
+    type = "lb_cookie"
+    enabled = true
+    cookie_duration = 86400
+  }
 }
 
 resource "aws_alb_target_group_attachment" "instance_1" {
@@ -93,6 +113,12 @@ resource "aws_alb_target_group_attachment" "instance_1" {
 resource "aws_alb_target_group_attachment" "instance_2" {
   target_group_arn = aws_alb_target_group.alb_tg.arn
   target_id        = aws_instance.instance_2.id
+  port             = 80
+}
+
+resource "aws_alb_target_group_attachment" "instance_3" {
+  target_group_arn = aws_alb_target_group.alb_tg.arn
+  target_id        = aws_instance.instance_3.id
   port             = 80
 }
 
